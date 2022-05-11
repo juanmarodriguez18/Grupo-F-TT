@@ -1,1 +1,17 @@
 
+
+
+El proyecto es un juego de cartas centrado en personajes, su posicionamiento en
+el tablero y los mazos de estos personajes los cuales estaran compuestos por 
+cartas tanto ofencivas como defencivas con distintos efectos y rangos para 
+actuar hasta cierta posicion el proyecto tambien incluye un multijugador
+LAN en el cual cada jugador podra unirse o salirde la partida en cualquier momento
+de esta y un bot que sepa jugar al juego y elcual remplazara a cualquier jugador
+si este abandona la partida.
+Las herramientas que se utilizaran seran el lenguaje de python y la extencion de
+este phygames junto con el editor de texto Visual Studio Code.
+
+Integrantes del grupo F:
+Matías Ezequiel Roselot
+Juan Manuel Rodrigues Crivelli
+Gonsalo Manuel Sevilla
