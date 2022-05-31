@@ -67,10 +67,10 @@ pos1A=posicion(169,220,1,1,per1)
 pos2A=posicion(500,220.5,2,1,null)
 pos3A=posicion(830,220.75,3,1,null)
 pos4A=posicion(1170,220,4,1,null)
-pos1B=posicion(169,380,1,1,null)
-pos2B=posicion(500,380,5,2,1,null)
-pos3B=posicion(830,380,75,3,1,null)
-pos4B=posicion(1170,380,4,1,null)
+pos1B=posicion(169,380,1,2,null)
+pos2B=posicion(500,380,5,2,2,null)
+pos3B=posicion(830,380,75,3,2,null)
+pos4B=posicion(1170,380,4,2,null)
 
 posiciones=[pos1A,pos2A,pos3A,pos4A,pos1B,pos2B,pos3B,pos4B]
 
