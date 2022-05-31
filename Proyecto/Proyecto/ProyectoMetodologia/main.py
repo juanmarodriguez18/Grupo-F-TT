@@ -52,12 +52,27 @@ class posicion():
             
 null=personaje(0,0,"null",0,0,0)
 per1=personaje(0,0,"Espadachin",10,2,4)
+per2=personaje(0,0, "Desesperada",6,1,3)
+per3=personaje(0,0,"Enfermo",10,1,3)
+per4=personaje(0,0"Bandida",12,2,2)
+per5=personaje(0,0,"Tirador",10,1,4)
+per6=personaje(0,0"Bardo",8,3,5)
+per7=personaje(0,0"Reforsado",16,1,1)
+per8=personaje(0,0,"Maniatica",8,3,4)
+per9=personaje(0,0,"Bestia",14,2,2)
+per10=personaje(0,0,"Barbaro",12,1,2)
+per11=personaje(0,0,"Cazadora",6,3,4)
+per12=personaje(0,0,"Desertor",8,2,3)
 pos1A=posicion(169,220,1,1,per1)
 pos2A=posicion(500,220.5,2,1,null)
 pos3A=posicion(830,220.75,3,1,null)
 pos4A=posicion(1170,220,4,1,null)
+pos1B=posicion(169,380,1,1,null)
+pos2B=posicion(500,380,5,2,1,null)
+pos3B=posicion(830,380,75,3,1,null)
+pos4B=posicion(1170,380,4,1,null)
 
-posiciones=[pos1A,pos2A,pos3A,pos4A]
+posiciones=[pos1A,pos2A,pos3A,pos4A,pos1B,pos2B,pos3B,pos4B]
 
 def dibFondo():
     screen.blit(fondo,(0,0))
