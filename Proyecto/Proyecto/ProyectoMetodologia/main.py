@@ -20,6 +20,7 @@ screen = pygame.display.set_mode((LargoPantalla,AnchoPantalla+Partemano),0,32)
 
 
 fondo = pygame.image.load('imagenes/tableroPrueba.png').convert_alpha()
+botonMov= pygame.image.load('imagenes/mover.png')
 
 class personaje():
     def __init__(self,x,y,nombre,vidMax,mov,vel):
@@ -49,7 +50,18 @@ class posicion():
         pygame.draw.circle(screen,verde,(self.x,self.y),5.0)
         if self.pers.nombre != "null":
             self.pers.dibujar(self)
-            
+    
+class BotonMov():
+    def __init__(self,x,y):
+        self.x=x
+        self.y=y
+    def dibujar(self):
+        screen.blit(botonMov,(self.x,self.y))
+
+    def mover(per:personaje ,pos)  :
+        pass
+    
+    
 null=personaje(0,0,"null",0,0,0)
 per1=personaje(0,0,"Espadachin",10,2,4)
 per2=personaje(0,0, "Desesperada",6,1,3)
@@ -76,13 +88,14 @@ posiciones=[pos1A,pos2A,pos3A,pos4A,pos1B,pos2B,pos3B,pos4B]
 
 def dibFondo():
     screen.blit(fondo,(0,0))
-
+boton=BotonMov(1000,AnchoPantalla-Partemano/2)
 run = True
 
 while run:
     clock.tick(fps)
 
     dibFondo()
+    boton.dibujar()
     for i in posiciones:
         i.dibujar()
 
