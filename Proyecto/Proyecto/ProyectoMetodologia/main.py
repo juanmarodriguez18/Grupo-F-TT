@@ -2,7 +2,9 @@
 
 
 
-from itertools import count
+
+
+
 import pygame
 
 
@@ -14,6 +16,8 @@ fps=60
 verde=(0,255,0)
 rojo=(255,0,0)
 negro=(0,0,0)
+
+tamañoTablero=8
 
 LargoPantalla= 1353
 AnchoPantalla=600
@@ -30,27 +34,48 @@ class cartaOfen():
         self.daño=daño
         self.rangoMax=rangoMax
         self.rangoMin=rangoMin
+        
+
+
+    def rango(self,pos):
+        range=[]
+        i=pos-self.rangoMax
+
+        while i<= pos-self.rangoMin:
+            range.append(i)
+            i +=1
+        i += self.rangoMin    
+        while i<= pos+self.rangoMax:
+            range.append(i)
+            i +=1
+        return range    
 
 class carta():
-    def __init__(self,nombre,tipoCarta,nomTipo):
+    def __init__(self,nombre,tipoCarta,nomTipo,areaTipo):
         self.nombre=nombre
         self.carta=tipoCarta
         self.nomTipo=nomTipo
+        self.areaTipo=areaTipo
         self.foto=pygame.image.load(f'imagenes/{self.nombre}.png')
 
     def dibujar(self,x,y):
         screen.blit(self.foto,(x,y))    
 
 class personaje():
-    def __init__(self,x,y,nombre,vidMax,mov,vel,mazo):
+    def __init__(self,x,nombre,vidMax,mov,vel,mazo,vid=50):
+        self.x=x
         self.nombre=nombre
         self.vidMax=vidMax
-        self.vid=vidMax
+        self.vid=vid
+        if self.vid>=self.vidMax:
+            self.vid=vidMax
         self.mov=mov
         self.vel=vel
         self.jugo=False
         self.carta= pygame.image.load(f'imagenes/{self.nombre}.png')
         self.mazo=mazo
+
+    
 
     def turno(self,run,posciones,i):
         #es la carta que se hizo clik
@@ -76,9 +101,33 @@ class personaje():
         while run==True :
             #pone en rojo los lugares que llega la carta ofenciva
             if jugada.nomTipo=="of":
-                for x in posiciones:
-                    if x.lado==lineaObj and ((posself+jugada.carta.rangoMax)>=x.pos>=(posself+jugada.carta.rangoMax)):
-                        x.dibujar(rojo)
+                for x in range(posiciones.__len__()):
+                    for i in jugada.carta.rango(posself):
+                        if posiciones[x].pos==i and posiciones[x].lado==lineaObj:
+                            #colorea las pociones
+                            posiciones[x].dibujar(rojo)
+                            #revisa donde se hizo clik y revisa si el area sigue en la linea objetivo
+                            if clik==True and posiciones[x].y-85<=posmouse[1]<=posiciones[x].y+65 and posiciones[x].x-75<=posmouse[0]<=posiciones[x].x+75:
+                                if jugada.areaTipo=="sing":
+                                    posiciones[x].pers=posiciones[x].pers.recibir(jugada)
+                                elif jugada.areaTipo=="alr":
+                                    if x-1>=0 and posiciones[x-1].lado==lineaObj:
+                                        posiciones[x-1].pers=posiciones[x-1].pers.recibir(jugada)
+                                    if x+1<=tamañoTablero and posiciones[x+1].lado==lineaObj:
+                                        posiciones[x+1].pers=posiciones[x+1].pers.recibir(jugada) 
+                                elif jugada.areaTipo=="area":
+                                    if x-1>=0 and posiciones[x-1].lado==lineaObj:
+                                        posiciones[x-1].pers=posiciones[x-1].pers.recibir(jugada)
+                                    posiciones[x].pers=posiciones[x].pers.recibir(jugada)    
+                                    if x+1<=tamañoTablero and posiciones[x+1].lado==lineaObj:
+                                        posiciones[x+1].pers=posiciones[x+1].pers.recibir(jugada) 
+                                elif jugada.areaTipo=="todo":
+                                    for t in range(posciones.__len__()):
+                                        if posiciones[t].lado==lineaObj:
+                                            posiciones[t].pers=posiciones[t].pers.recibir(jugada)
+                                #devuelve las posiciones actualizadas
+                                return posciones
+                    
             
 
             #sige revisando los eventos
@@ -92,10 +141,20 @@ class personaje():
                     clik=False    
                     posmouse=(0,0)
                     
-            pygame.display.update()        
+            pygame.display.update()   
+        pygame.quit         
                
 
-    pygame.display.update()
+    def recibir(self,jugada:carta):
+        x=personaje(self.x+1,self.nombre,self.vidMax,self.mov,self.vel,self.mazo,self.vid)
+
+        if jugada.nomTipo=="of":
+            x.vid -= jugada.carta.daño
+        else:
+            pass
+
+        
+        return x      
 
 
     def toca(self):
@@ -133,25 +192,25 @@ class BotonMov():
         pass
     
 #personajes generales y la posicion en el array de posiciones    
-null=personaje(0,0,"null",0,0,0,[])
-per1=personaje(0,0,"Espadachin",10,2,4,[carta('Espadachin',cartaOfen(3,1,0),"of"),carta('Espadachin',cartaOfen(3,1,0),"of")])
-per2=personaje(0,0,"Espadachin",10,2,3,[carta('Espadachin',cartaOfen(3,1,0),"of")])
-#per2=personaje(0,0, "Desesperada",6,1,3)
-#per3=personaje(0,0,"Enfermo",10,1,3)
-#per4=personaje(0,0"Bandida",12,2,2)
-#per5=personaje(0,0,"Tirador",10,1,4)
-#per6=personaje(0,0"Bardo",8,3,5)
-#per7=personaje(0,0"Reforsado",16,1,1)
-#per8=personaje(0,0,"Maniatica",8,3,4)
-#per9=personaje(0,0,"Bestia",14,2,2)
-#per10=personaje(0,0,"Barbaro",12,1,2)
-#per11=personaje(0,0,"Cazadora",6,3,4)
-#per12=personaje(0,0,"Desertor",8,2,3)
+null=personaje(0,"null",0,0,0,[])
+per1=personaje(0,"Espadachin",10,2,4,[carta('Espadachin',cartaOfen(3,1,0),"of","sing"),carta('Espadachin',cartaOfen(3,1,0),"of","alr")])
+per2=personaje(0,"Espadachin",10,2,3,[carta('Espadachin',cartaOfen(3,1,0),"of","area")])
+#per2=personaje(0, "Desesperada",6,1,3)
+#per3=personaje(0,"Enfermo",10,1,3)
+#per4=personaje(0"Bandida",12,2,2)
+#per5=personaje(0,"Tirador",10,1,4)
+#per6=personaje(0"Bardo",8,3,5)
+per7=personaje(0,"null",16,1,1,[])
+#per8=personaje(0,"Maniatica",8,3,4)
+#per9=personaje(0,"Bestia",14,2,2)
+#per10=personaje(0,"Barbaro",12,1,2)
+#per11=personaje(0,"Cazadora",6,3,4)
+#per12=personaje(0,"Desertor",8,2,3)
 pos1A=posicion(169,220,1,1,per1)
 pos2A=posicion(500,220.5,2,1,per2)
 pos3A=posicion(830,220.75,3,1,null)
 pos4A=posicion(1170,220,4,1,null)
-pos1B=posicion(169,380,1,2,null)
+pos1B=posicion(169,380,1,2,per7)
 pos2B=posicion(500,380,2,2,null)
 pos3B=posicion(830,380,3,2,null)
 pos4B=posicion(1170,380,4,2,null)
@@ -160,8 +219,8 @@ posiciones=[pos1A,pos2A,pos3A,pos4A,pos1B,pos2B,pos3B,pos4B]
 turnos=[]
 # crea el orden de turnos
 def agregarturnos(turnos,posiciones):
-    for i in range(8):
-        per=personaje(0,0,"null",0,0,0,[])
+    for i in range(tamañoTablero):
+        per=personaje(0,"null",0,0,0,[])
         for j in posiciones:
             if j.pers.vel>=per.vel and j.pers.jugo==False:
                 if j.pers.vel>per.vel or (j.pers.vel==per.vel and j.pers.vid<=per.vid):
@@ -203,7 +262,8 @@ while run:
         i=0
         while i<mano.__len__():
             if espacio<=posmouse[0]<=espacio+150:
-                turnos[toca].turno(run,posiciones,i)
+                posiciones=turnos[toca].turno(run,posiciones,i)
+
                 if toca<=8:
                     toca +=1
                 else: 
