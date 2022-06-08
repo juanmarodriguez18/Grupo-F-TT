@@ -109,29 +109,29 @@ class personaje():
             #pone en rojo los lugares que llega la carta ofenciva
             if jugada.nomTipo=="of":
                 for j in tablero:
-                    for x in range(j.posiciones.__len__()):
+                    for x in j.posiciones:
                         for i in jugada.carta.rango(posself):
-                            if j.posiciones[x].pos==i and j.posiciones[x].lado==lineaObj:
+                            if x.pos==i and x.lado==lineaObj:
                                 #colorea las pociones
-                                j.posiciones[x].dibujar(rojo)
+                                x.dibujar(rojo)
                                 #revisa donde se hizo clik y revisa si el area sigue en la linea objetivo
-                                if clik==True and j.posiciones[x].y-85<=posmouse[1]<=j.posiciones[x].y+65 and j.posiciones[x].x-75<=posmouse[0]<=j.posiciones[x].x+75:
-                                    return x,lineaObj,jugada
+                                if clik==True and x.y-85<=posmouse[1]<=x.y+65 and x.x-75<=posmouse[0]<=x.x+75:
+                                    return x.pos,lineaObj,jugada
             #pone en azul los lugares de las cartas defensivas                    
             else :
                 for j in tablero:
-                    for x in range(j.posiciones.__len__()):
-                        if j.posiciones[x].lado==lineaObj:
+                    for x in j.posiciones:
+                        if x.lado==lineaObj:
                             #este pinta la carta si es solo propia
-                            if jugada.areaTipo=="sing" and j.posiciones[x].pers==self:
-                                j.posiciones[x].dibujar(azul)
-                                if clik==True and j.posiciones[x].y-85<=posmouse[1]<=j.posiciones[x].y and j.posiciones[x].x-75<=posmouse[0]<=j.posiciones[x].x+75:
-                                    return x,lineaObj,jugada
+                            if jugada.areaTipo=="sing" and x.pers==self:
+                                x.dibujar(azul)
+                                if clik==True and x.y-85<=posmouse[1]<=x.y and x.x-75<=posmouse[0]<=x.x+75:
+                                    return x.pos,lineaObj,jugada
                             #y este pinta todo si la carta no es propia pinta        
                             else:
-                                j.posiciones[x].dibujar(azul)
-                                if clik==True and j.posiciones[x].y-85<=posmouse[1]<=j.posiciones[x].y and j.posiciones[x].x-75<=posmouse[0]<=j.posiciones[x].x+75:
-                                    return x,jugada,lineaObj
+                                x.dibujar(azul)
+                                if clik==True and x.y-85<=posmouse[1]<=x.y and x.x-75<=posmouse[0]<=x.x+75:
+                                    return x.pos,lineaObj,jugada
                     
             
 
@@ -266,18 +266,19 @@ turnos=[]
 # crea el orden de turnos
 def agregarturnos(turnos,tablero,tamaño):
     turnos=[]
-    for i in tablero:
+    z=0
+    while z<tamaño:
         per=personaje(0,"null",0,0,0,[])
-        for j in i.posiciones:
-            if j.pers.vel>=per.vel and j.pers.jugo==False:
-                if j.pers.vel>per.vel or (j.pers.vel==per.vel and j.pers.vid<=per.vid):
-                    j.pers.jugo=True
-                    j.pers.defiende=True
-                    per=j.pers
-
-                
-                        
-            turnos.append(per)
+        for i in tablero:
+            
+            for j in i.posiciones:
+                if j.pers.vel>=per.vel and j.pers.jugo==False:
+                    if j.pers.vel>per.vel or (j.pers.vel==per.vel and j.pers.vid<=per.vid):
+                        j.pers.jugo=True
+                        j.pers.defiende=True
+                        per=j.pers                
+        turnos.append(per)
+        z+=1    
     return turnos                        
             
         
@@ -286,7 +287,7 @@ def mantenerTurnos(turnos) :
     i=0
     while i<turnos.__len__():
         for x in range(turnos.__len__()-1):
-            if turnos[x].jugo==False:
+            if turnos[x].jugo==True:
                 if turnos[x].vel<turnos[x+1].vel or (turnos[x].vel<=turnos[x+1].vel and turnos[x].vid<=turnos[x+1].vid):
                     per=turnos[x]
                     turnos[x]=turnos[x+1]
@@ -322,6 +323,7 @@ juega:jugador
 jugada=carta("null",cartaOfen(0,0,0),"of","sing")
 while run:
     #permite continuar si todos los jugadores ceden a seguir
+
     seguir=True
     for i in tablero:
         if i.cede!=True:
@@ -408,23 +410,27 @@ while run:
     if seguir==False:
         #en caso de que el judador no halla cedido revisa donde clikeo
         if juega.cede==False and clik==True:
-            for x in juega.posiciones:
-                if ((x.lado==1 and posmouse[1]<x.y-85) or (x.lado==2 and x.y+65<=posmouse[1]<=AnchoPantalla-Partemano)) and x.pers.defiende==True:
-                    espacio=(x.x-75)-90
-                    i=0
-                    while i<=x.pers.defe.__len__()-1:
-                        if espacio<=posmouse[0]<=espacio+75:
-                            defensa=x.pers.defender(i)
-                            if defensa.carta.anula==True:
-                                jugada=carta("null",cartaOfen(0,0,0),"of","sing")
-                            for x in tablero:
-                                x.cede=False 
-                            break       
-                        else:
-                            espacio+=75
-                            i+=1
-                elif boton.x<=posmouse[0]<=boton.x+150 and boton.y<=posmouse[1]:
-                    juega.cede=True
+            if boton.x<=posmouse[0]<=boton.x+150 and boton.y<=posmouse[1]:
+                juega.cede=True
+                clik=False 
+            else:    
+                for x in juega.posiciones:
+                    if ((x.lado==1 and posmouse[1]<x.y-85) or (x.lado==2 and x.y+65<=posmouse[1]<=AnchoPantalla-Partemano)) and x.pers.defiende==True:
+                        espacio=(x.x-75)-90
+                        i=0
+                        while i<=x.pers.defe.__len__()-1:
+                            if espacio<=posmouse[0]<=espacio+75:
+                                defensa=x.pers.defender(i)
+                                if defensa.carta.anula==True:
+                                    jugada=carta("null",cartaOfen(0,0,0),"of","sing")
+                                for x in tablero:
+                                    x.cede=False 
+                                clik=False     
+                                break       
+                            else:
+                                espacio+=75
+                                i+=1
+                
                     
 
 
